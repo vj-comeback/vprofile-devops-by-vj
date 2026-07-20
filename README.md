@@ -1,25 +1,22 @@
-# Prerequisites
-#
-- JDK 17 or 21
-- Maven 3.9
-- MySQL 8
+# VProfile DevOps by VJ
 
-# Technologies 
+## Overview
+
+This repository contains my implementation of the VProfile DevOps project as part of my DevOps learning journey.
+
+## Technologies
+
+- Java
 - Spring MVC
-- Spring Security
-- Spring Data JPA
 - Maven
-- JSP
-- Tomcat
+- Apache Tomcat
 - MySQL
 - Memcached
-- Rabbitmq
-- ElasticSearch
-# Database
-Here,we used Mysql DB 
-sql dump file:
-- /src/main/resources/db_backup.sql
-- db_backup.sql file is a mysql dump file.we have to import this dump to mysql db server
-- > mysql -u <user_name> -p accounts < db_backup.sql
+- RabbitMQ
 
+## Acknowledgement
 
+This project was implemented by following the VProfile DevOps tutorial by **hkhcoder**.
+
+Original Repository:
+https://github.com/hkhcoder/vprofile-project
