@@ -1,3 +1,4 @@
+
 package com.visualpathit.account.controller;
 
 import com.visualpathit.account.model.User;
@@ -38,7 +39,8 @@ public class UserController {
     }
 
     @PostMapping("/registration")
-    public String registration(@ModelAttribute("userForm") @Valid User userForm, BindingResult bindingResult, Model model) {
+    public String registration(@ModelAttribute("userForm") @Valid User userForm,
+                               BindingResult bindingResult, Model model) {
         userValidator.validate(userForm, bindingResult);
 
         if (bindingResult.hasErrors()) {
@@ -46,7 +48,9 @@ public class UserController {
         }
 
         userService.save(userForm);
-        boolean loginSuccessful = securityService.autologin(userForm.getUsername(), userForm.getPasswordConfirm());
+        boolean loginSuccessful = securityService.autologin(
+                userForm.getUsername(), userForm.getPasswordConfirm());
+
         if (!loginSuccessful) {
             return "redirect:/login?error";
         }
@@ -54,25 +58,33 @@ public class UserController {
         return "redirect:/welcome";
     }
 
-    @GetMapping("/")
-    public String login(Model model, @RequestParam(value = "error", required = false) String error,
+    // FIX: Support both root URL and GET /login
+    @GetMapping({"/", "/login"})
+    public String login(Model model,
+                        @RequestParam(value = "error", required = false) String error,
                         @RequestParam(value = "logout", required = false) String logout) {
+
         if (error != null) {
             model.addAttribute("error", "Your username and password is invalid.");
         }
+
         if (logout != null) {
             model.addAttribute("message", "You have been logged out successfully.");
         }
+
         return "login";
     }
 
     @PostMapping("/login")
     public String loginPost(@ModelAttribute("user") User user, Model model) {
-        boolean loginSuccessful = securityService.autologin(user.getUsername(), user.getPassword());
+        boolean loginSuccessful = securityService.autologin(
+                user.getUsername(), user.getPassword());
+
         if (!loginSuccessful) {
             model.addAttribute("error", "Your username and password is invalid.");
             return "login";
         }
+
         return "redirect:/welcome";
     }
 
@@ -96,23 +108,30 @@ public class UserController {
     @GetMapping("/users/{id}")
     public String getOneUser(@PathVariable("id") String id, Model model) {
         String result;
+
         try {
             User userData = MemcachedUtils.memcachedGetData(id);
+
             if (userData != null) {
                 result = "Data is From Cache";
                 model.addAttribute("user", userData);
             } else {
                 User user = userService.findById(Long.parseLong(id));
                 result = MemcachedUtils.memcachedSetData(user, id);
+
                 if (result == null) {
                     result = "Memcached Connection Failure !!";
                 }
+
                 model.addAttribute("user", user);
             }
+
             model.addAttribute("Result", result);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return "user";
     }
 
@@ -124,7 +143,8 @@ public class UserController {
     }
 
     @PostMapping("/user/{username}")
-    public String userUpdateProfile(@PathVariable("username") String username, @ModelAttribute("user") User userForm) {
+    public String userUpdateProfile(@PathVariable("username") String username,
+                                    @ModelAttribute("user") User userForm) {
         User user = userService.findByUsername(username);
         updateUserDetails(user, userForm);
         userService.save(user);
@@ -163,3 +183,4 @@ public class UserController {
         return "uuid = " + UUID.randomUUID().toString();
     }
 }
+
